@@ -1,0 +1,18 @@
+li:hover {
+    background-color: lightgrey;
+}
+
+.vertical {
+	max-height: 600px;
+	overflow: auto;
+}
+
+#container {
+	padding: 5%;
+}
+
+.search-bar {
+	width: 50%;
+  	margin: 0 auto;
+  	text-align: center;
+}
