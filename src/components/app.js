@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PlayerList from '../containers/player-list';
 import PlayerDetail from '../containers/player-detail';
 import PlayerTable from '../containers/player-table';
+import PlayerModal from '../containers/player-modal';
 
 export default class App extends Component {
   render() {

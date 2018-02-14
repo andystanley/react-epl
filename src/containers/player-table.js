@@ -1,43 +1,66 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { selectPlayer, getPlayers, getTeams } from '../actions';
+import { selectPlayer, getPlayers, getPositions, getTeams } from '../actions';
 import { bindActionCreators } from 'redux';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import PlayerModal from '../containers/player-modal';
 
 class PlayerTable extends Component {
-	constructor(props) {
-	    super(props);
+	constructor(props, context) {
+	    super(props, context);
+
+    	this.state = {
+      		modalShow: false,
+      		playerName: ''
+    	};
 
 	    this.options = {
 	      defaultSortName: 'total_points',  // default sort column name
-	      defaultSortOrder: 'desc'  // default sort order
+	      defaultSortOrder: 'desc',
+	      onRowClick: this.playerClicked.bind(this)
 	    };
     }
 
 	componentDidMount() {
 		this.props.getPlayers();
 		this.props.getTeams();
+		this.props.getPositions();
 	}
 
 	clubFormatter(cell, row) {
 		if (this.props.teams[cell]) {
 			return this.props.teams[cell].name;
 		}
-
   	}
 
+  	positionFormatter(cell, row) {
+  		if (this.props.positions[cell]) {
+			return this.props.positions[cell].singular_name_short;
+		}
+  	}
+
+  	playerClicked(row, columnIndex, rowIndex, e) {
+  		this.props.selectPlayer(row);
+  		this.setState({playerName: row});
+  		this.setState({ modalShow: true });
+	}
+
+
 	render() {
+		let modalClose = () => this.setState({ modalShow: false });
 	    return (
 	    	<div>
-		    	<BootstrapTable data={ this.props.players } options={ this.options } exportCSV={ true } keyField='id' height='500' scrollTop={ 'Bottom' }>
-		    		<TableHeaderColumn dataField='first_name' filter={ { type: 'TextFilter', delay: 300 } } dataSort>First Name</TableHeaderColumn>
-		        	<TableHeaderColumn dataField='second_name' filter={ { type: 'TextFilter', delay: 300 } } dataSort>Last Name</TableHeaderColumn>
-		       		<TableHeaderColumn dataField='team_code' dataFormat={ this.clubFormatter.bind(this) } filterFormatted filter={ { type: 'SelectFilter', options: teams } } dataSort>Club</TableHeaderColumn>
-		        	<TableHeaderColumn dataField='total_points' dataSort>Total Points</TableHeaderColumn>
-		       		<TableHeaderColumn dataField='form' dataSort>Form</TableHeaderColumn>
-		        	<TableHeaderColumn dataField='goals_scored' dataSort>Goals</TableHeaderColumn>
-		        	<TableHeaderColumn dataField='assists' dataSort>Assists</TableHeaderColumn>
+		    	<BootstrapTable data={ this.props.players } options={ this.options } exportCSV={ true } keyField='id' height='500' scrollTop={ 'Bottom' } striped hover>
+		    		<TableHeaderColumn dataField='first_name' width='150' filter={ { type: 'TextFilter', delay: 300 } } dataSort>First Name</TableHeaderColumn>
+		        	<TableHeaderColumn dataField='second_name' width='150' filter={ { type: 'TextFilter', delay: 300 } } dataSort>Last Name</TableHeaderColumn>
+		       		<TableHeaderColumn dataField='element_type' width='125' dataFormat={ this.positionFormatter.bind(this) } filterFormatted filter={ { type: 'SelectFilter', options: positions } } dataSort>Position</TableHeaderColumn>
+		       		<TableHeaderColumn dataField='team_code' width='125' dataFormat={ this.clubFormatter.bind(this) } filterFormatted filter={ { type: 'SelectFilter', options: teams } } dataSort>Club</TableHeaderColumn>
+		        	<TableHeaderColumn dataField='total_points' width='85' dataSort>Points</TableHeaderColumn>
+		       		<TableHeaderColumn dataField='form' width='85' dataSort>Form</TableHeaderColumn>
+		        	<TableHeaderColumn dataField='goals_scored' width='85' dataSort>Goals</TableHeaderColumn>
+		        	<TableHeaderColumn dataField='assists' width='85' dataSort>Assists</TableHeaderColumn>
 		      </BootstrapTable>
+		      <PlayerModal show={this.state.modalShow} onHide={modalClose} playerName={this.state.playerName} />
 	      </div>
     	);
 	}
@@ -66,13 +89,21 @@ const teams = {
 	21: 'West Ham',
 };
 
+const positions = {
+	1: 'GKP',
+	2: 'DEF',
+	3: 'MID',
+	4: 'FWD'
+};
+
 // Connects react and redux
 function mapStateToProps(state) {
 	return {
 		players: state.players,
-		teams: state.teams
+		teams: state.teams,
+		positions: state.positions
 	};
 }
 
 // Promote PlayerList From a component to a container
-export default connect(mapStateToProps, { getPlayers, getTeams, selectPlayer })(PlayerTable);
+export default connect(mapStateToProps, { getPlayers, getTeams, getPositions, selectPlayer })(PlayerTable);

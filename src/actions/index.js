@@ -6,6 +6,7 @@ const API_SUMMARY = 'https://fantasy.premierleague.com/drf/bootstrap-static';
 export const PLAYER_SELECTED = 'PLAYER_SELECTED';
 export const GET_PLAYERS = 'GET_PLAYERS';
 export const GET_TEAMS = 'GET_TEAMS';
+export const GET_POSITIONS = 'GET_POSITIONS';
 
 export function selectPlayer(player) {
 	const url = `${API_PLAYER}${player.id}`;
@@ -33,4 +34,13 @@ export function getTeams() {
 		type: GET_TEAMS,
 		payload: request
 	};
+}
+
+export function getPositions() {
+	const request = axios.get(API_SUMMARY);
+
+	return {
+		type: GET_POSITIONS,
+		payload: request
+	}
 }
