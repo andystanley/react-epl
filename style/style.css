@@ -1,18 +1,19 @@
-li:hover {
-    background-color: lightgrey;
-}
-
 .vertical {
 	max-height: 600px;
 	overflow: auto;
 }
 
-#container {
-	padding: 5%;
+.box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
-.search-bar {
-	width: 50%;
-  	margin: 0 auto;
-  	text-align: center;
+.center {
+	text-align: center;
+}
+
+.modal-header {
+	background-color: lightgrey;
 }

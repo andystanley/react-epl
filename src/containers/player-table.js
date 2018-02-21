@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { selectPlayer, getPlayers, getPositions, getTeams } from '../actions';
 import { bindActionCreators } from 'redux';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import PlayerModal from '../containers/player-modal';
+import PlayerModal from '../components/player-modal';
 
 class PlayerTable extends Component {
 	constructor(props, context) {
@@ -11,7 +11,7 @@ class PlayerTable extends Component {
 
     	this.state = {
       		modalShow: false,
-      		playerName: ''
+      		selectedPlayer: {}
     	};
 
 	    this.options = {
@@ -41,10 +41,9 @@ class PlayerTable extends Component {
 
   	playerClicked(row, columnIndex, rowIndex, e) {
   		this.props.selectPlayer(row);
-  		this.setState({playerName: row});
+  		this.setState({ selectedPlayer: row });
   		this.setState({ modalShow: true });
 	}
-
 
 	render() {
 		let modalClose = () => this.setState({ modalShow: false });
@@ -60,7 +59,7 @@ class PlayerTable extends Component {
 		        	<TableHeaderColumn dataField='goals_scored' width='85' dataSort>Goals</TableHeaderColumn>
 		        	<TableHeaderColumn dataField='assists' width='85' dataSort>Assists</TableHeaderColumn>
 		      </BootstrapTable>
-		      <PlayerModal show={this.state.modalShow} onHide={modalClose} playerName={this.state.playerName} />
+		      <PlayerModal show={this.state.modalShow} onHide={modalClose} selectedPlayer={this.state.selectedPlayer} />
 	      </div>
     	);
 	}
